@@ -1,0 +1,95 @@
+Build and version evidence for the Ascon coursework evidence pack
+=================================================================
+
+Source code
+-----------
+Upstream repository:
+  https://github.com/ascon/ascon-c
+
+Pinned commit used in the report:
+  446347f21b209f3921c65ece70027c366cbe1693
+
+Reference setup commands:
+  git clone https://github.com/ascon/ascon-c.git
+  cd ascon-c
+  git checkout 446347f21b209f3921c65ece70027c366cbe1693
+
+Local tool versions recorded on 10 May 2026
+------------------------------------------
+macOS:
+  ProductName: macOS
+  ProductVersion: 15.2
+  BuildVersion: 24C101
+
+Compiler:
+  Apple clang version 17.0.0 (clang-1700.0.13.3)
+  Target: arm64-apple-darwin24.2.0
+
+OpenSSL:
+  OpenSSL 3.6.2 7 Apr 2026
+  Platform: darwin64-arm64-cc
+  OPENSSLDIR: /opt/homebrew/etc/openssl@3
+
+Arduino CLI:
+  arduino-cli Version: 1.4.1
+  Commit: Homebrew
+  Date: 2026-01-19T16:11:40Z
+
+Host AEAD timing harness pattern
+--------------------------------
+Example for Ascon-AEAD128 opt64:
+  clang -O3 \
+    -Iascon-c/crypto_aead/asconaead128/opt64 \
+    -Iascon-c/tests \
+    ascon-c/crypto_aead/asconaead128/opt64/*.c \
+    bench_time_aead.c \
+    -o bench_aead_opt64
+
+  ./bench_aead_opt64 > results/aead_opt64.csv
+
+Host hash timing harness pattern
+--------------------------------
+Example for Ascon-Hash256 opt64:
+  clang -O3 \
+    -Iascon-c/crypto_hash/asconhash256/opt64 \
+    -Iascon-c/tests \
+    ascon-c/crypto_hash/asconhash256/opt64/*.c \
+    bench_time_hash.c \
+    -o bench_hash_opt64
+
+  ./bench_hash_opt64 > results/hash_opt64.csv
+
+OpenSSL comparator timing harness
+---------------------------------
+The comparator rows were generated with OpenSSL EVP calls. The raw comparator CSV is:
+  competitor_aead_openssl.csv
+
+The comparator harness source is:
+  benchmark_harness_competitor_aead.c
+
+Host AEAD rejection harness
+---------------------------
+The host rejection harness records the actual decrypt return code for each invalid-input case.
+
+Example rebuild command for Ascon-AEAD128 opt64:
+  clang -O3 \
+    -Iascon-c/crypto_aead/asconaead128/opt64 \
+    -Iascon-c/tests \
+    ascon-c/crypto_aead/asconaead128/opt64/*.c \
+    aead_negative_tests.c \
+    -o aead_negative_tests
+
+  ./aead_negative_tests > aead_negative_tests.csv
+
+Arduino board compile targets
+-----------------------------
+Nano 33 BLE Rev2:
+  arduino:mbed_nano:nano33ble
+
+UNO R4 Minima:
+  arduino:renesas_uno:minima
+
+Mega 2560 Rev3:
+  arduino:avr:mega
+
+The per-board upload, compile and serial logs are included as separate log files in this folder.
